@@ -28,7 +28,7 @@ Script Python qui se connecte en **SSH via Netmiko** aux switchs **Alcatel-Lucen
 
 ```bash
 # Cloner le dépôt
-git clone https://github.com/devopsthomas/backup-config-ale-switch.git
+git clone https://github.com/thomaswithlinux/backup-config-ale-switch.git
 cd backup-config-ale-switch
 
 # Installer les dépendances
@@ -104,5 +104,5 @@ crontab -e
 
 ## 👤 Auteur
 
-**Thomas Letard** — [@devopsthomas](https://github.com/devopsthomas)
+**Thomas Letard** — [@thomaswithlinux](https://github.com/devopsthomas)
 Apprenti TSSR · Linux, réseau & automatisation 🐧
