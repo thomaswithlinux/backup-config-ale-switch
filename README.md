@@ -1,53 +1,72 @@
-# 🐧 backup-config-ale-switch
+<p align="center">
+  <img src="docs/banner.svg" alt="backup-config-ale-switch" width="100%">
+</p>
 
-Script Python qui se connecte en **SSH via Netmiko** aux switchs **Alcatel-Lucent Enterprise OS6450** (tous modèles, quel que soit le nombre de ports) pour **sauvegarder automatiquement leur configuration** sur un NAS.
+# backup-config-ale-switch — *back up every switch, automatically*
 
----
+![Python](https://img.shields.io/badge/python-3.8%2B-f5b53f?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-Linux-f5b53f?style=flat-square)
+![License](https://img.shields.io/github/license/thomaswithlinux/backup-config-ale-switch?style=flat-square&color=f5b53f)
+![Last commit](https://img.shields.io/github/last-commit/thomaswithlinux/backup-config-ale-switch?style=flat-square&color=f5b53f)
 
-## ✨ Fonctionnalités
+Python script that connects over **SSH with Netmiko** to **Alcatel-Lucent
+Enterprise OS6450** switches (all models, whatever the number of ports) and
+**automatically backs up their configuration** to a NAS.
 
-- 🔐 Connexion SSH aux switchs ALE OS6450 grâce à **Netmiko**
-- 📄 Récupération de la configuration avec la commande `show configuration snapshot`
-- 📁 Un dossier de sauvegarde par switch pour garder tout bien rangé
-- 💾 Stockage des sauvegardes sur un **NAS via SMB**
-- 🧹 Politique de rétention : seules les **5 sauvegardes les plus récentes** par switch sont conservées, les plus anciennes sont supprimées automatiquement
-- 📝 Journalisation (logs) et gestion des erreurs : si un switch ne répond pas, le script continue avec les suivants
+## Table of contents
 
----
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Scheduling with cron](#scheduling-with-cron)
+- [Roadmap](#roadmap)
+- [Project structure](#project-structure)
+- [License](#license)
+- [Author](#author)
 
-## 🧰 Prérequis
+## Features
 
-- Linux (testé sur **Ubuntu**)
+- SSH connection to ALE OS6450 switches using **Netmiko**
+- Configuration retrieval with the `show configuration snapshot` command
+- One backup folder per switch to keep everything tidy
+- Backups stored on a **NAS over SMB**
+- Retention policy: only the **5 most recent backups** per switch are kept,
+  older ones are deleted automatically
+- Logging and error handling: if a switch does not answer, the script carries
+  on with the next ones
+
+## Requirements
+
+- Linux (tested on **Ubuntu**)
 - **Python 3.8+**
-- Accès SSH activé sur les switchs
-- Un partage SMB accessible (NAS)
+- SSH access enabled on the switches
+- An accessible SMB share (NAS)
 
----
-
-## ⚙️ Installation
+## Installation
 
 ```bash
-# Cloner le dépôt
+# Clone the repository
 git clone https://github.com/thomaswithlinux/backup-config-ale-switch.git
 cd backup-config-ale-switch
 
-# Installer les dépendances
-pip install netmiko
+# Install the dependencies
+pip install -r requirements.txt
 ```
 
----
+## Configuration
 
-## 🔧 Configuration
-
-1. **Monter le partage SMB du NAS** sur la machine Linux :
+1. **Mount the NAS SMB share** on the Linux machine:
 
 ```bash
 sudo apt install cifs-utils
 sudo mkdir -p /mnt/backups
-sudo mount -t cifs //IP_DU_NAS/backups /mnt/backups -o username=UTILISATEUR
+sudo mount -t cifs //NAS_IP/backups /mnt/backups -o username=USER
 ```
 
-2. **Renseigner la liste des switchs** dans le script (nom, adresse IP, identifiants) :
+2. **Fill in the list of switches** in the script (name, IP address,
+   credentials):
 
 ```python
 switches = [
@@ -56,17 +75,17 @@ switches = [
 ]
 ```
 
-> ⚠️ Ne publie jamais tes vrais identifiants ni tes vraies adresses IP sur GitHub. Utilise des variables d'environnement ou un fichier de configuration ajouté au `.gitignore`.
+> **Important:** never publish your real credentials or real IP addresses on
+> GitHub. Use environment variables or a configuration file added to
+> `.gitignore`.
 
----
-
-## 🚀 Utilisation
+## Usage
 
 ```bash
 python3 backup_switches.py
 ```
 
-Exemple d'arborescence obtenue :
+Example of the resulting tree:
 
 ```
 /mnt/backups/
@@ -78,31 +97,42 @@ Exemple d'arborescence obtenue :
     └── ...
 ```
 
----
+## Scheduling with cron
 
-## ⏰ Automatisation (cron)
-
-Pour lancer la sauvegarde tous les jours à 2 h du matin :
+To run the backup every day at 2 a.m.:
 
 ```bash
 crontab -e
 ```
 
 ```
-0 2 * * * /usr/bin/python3 /chemin/vers/backup_switches.py
+0 2 * * * /usr/bin/python3 /path/to/backup_switches.py
 ```
 
----
+## Roadmap
 
-## 🗺️ Améliorations prévues
+- [ ] Separate configuration file (YAML or `.env`)
+- [ ] E-mail notification on failure
+- [ ] Configuration comparison (change detection)
 
-- [ ] Fichier de configuration séparé (YAML ou `.env`)
-- [ ] Notification par e-mail en cas d'échec
-- [ ] Comparaison des configurations (détection des changements)
+## Project structure
 
----
+```
+backup-config-ale-switch/
+├── docs/
+│   └── banner.svg            # README banner
+├── backup-ale-os6450.py      # the backup script
+├── requirements.txt          # Python dependencies
+├── LICENSE                   # MIT license
+└── README.md                 # this file
+```
 
-## 👤 Auteur
+## License
 
-**Thomas Letard** — [@thomaswithlinux](https://github.com/devopsthomas)
-Apprenti TSSR · Linux, réseau & automatisation 🐧
+Released under the **MIT** license — see the [LICENSE](LICENSE) file.
+
+## Author
+
+**Thomas Letard** — [@thomaswithlinux](https://github.com/thomaswithlinux) ·
+[Portfolio](https://thomaswithlinux.github.io/)
+Apprentice TSSR · Linux, networking & automation
